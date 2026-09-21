@@ -3,7 +3,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="{{ url('/') }}" class="logo">
-                    <img src="{{ setting('logo') ?: asset('images/logo.png') }}" alt="{{ setting('site_name') }}" class="logo-img logo-img-footer">
+                    <img src="{{ asset('images/logo-footer.png') }}" alt="{{ setting('site_name') }}" class="logo-img logo-img-footer">
                 </a>
                 <p class="footer-desc">
                     {{ app()->getLocale() === 'ar' ? setting('footer_description_ar') : setting('footer_description') }}
