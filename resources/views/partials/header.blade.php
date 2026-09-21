@@ -5,16 +5,16 @@
             <div class="top-bar-contacts">
                 <a href="tel:{{ setting('contact_phone') }}" class="top-bar-contact-item">
                     <i class="bi bi-telephone-fill"></i>
-                    <span>{{ setting('contact_phone') }}</span>
+                    <span dir="ltr">{{ setting('contact_phone') }}</span>
                 </a>
                 <a href="mailto:{{ setting('contact_email') }}" class="top-bar-contact-item">
                     <i class="bi bi-envelope"></i>
                     <span>{{ setting('contact_email') }}</span>
                 </a>
-                <span class="top-bar-contact-item">
+                <a href="{{ google_maps_directions_url() }}" target="_blank" rel="noopener" class="top-bar-contact-item">
                     <i class="bi bi-geo-alt-fill"></i>
                     <span>{{ app()->getLocale() === 'ar' ? setting('contact_address_ar') : setting('contact_address') }}</span>
-                </span>
+                </a>
             </div>
             <div class="top-bar-right">
                 <div class="social-links">

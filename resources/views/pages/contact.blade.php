@@ -24,21 +24,21 @@
                     <div class="contact-info-icon"><i class="bi bi-telephone-fill"></i></div>
                     <div class="contact-info-text">
                         <strong>الهاتف الموحد</strong>
-                        <span dir="ltr" style="display:inline-block">{{ setting('contact_phone') }}</span>
+                        <a href="tel:{{ setting('contact_phone') }}" dir="ltr" style="display:inline-block">{{ setting('contact_phone') }}</a>
                     </div>
                 </div>
                 <div class="contact-info-item">
                     <div class="contact-info-icon"><i class="bi bi-envelope"></i></div>
                     <div class="contact-info-text">
                         <strong>البريد الإلكتروني</strong>
-                        <span>{{ setting('contact_email') }}</span>
+                        <a href="mailto:{{ setting('contact_email') }}">{{ setting('contact_email') }}</a>
                     </div>
                 </div>
                 <div class="contact-info-item">
                     <div class="contact-info-icon"><i class="bi bi-clock"></i></div>
                     <div class="contact-info-text">
                         <strong>ساعات العمل</strong>
-                        <span>{{ setting('working_hours_ar') }}</span>
+                        <span>{!! wrap_ltr_time_ranges(setting('working_hours_ar')) !!}</span>
                     </div>
                 </div>
             </div>
@@ -103,9 +103,9 @@
                     <div style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"><i class="bi bi-building"></i></div>
                     <h3 style="margin-bottom: 15px;">{{ trans_field($branch, 'name') }}</h3>
                     <ul class="footer-contact-list" style="color: var(--text); list-style: none; padding: 0;">
-                        <li style="margin-bottom: 10px; display: flex; gap: 10px;"><i class="bi bi-geo-alt-fill" style="color: var(--primary); margin-top: 4px;"></i> <span>{{ trans_field($branch, 'address') }}</span></li>
-                        <li style="margin-bottom: 10px; display: flex; gap: 10px;"><i class="bi bi-telephone-fill" style="color: var(--primary); margin-top: 4px;"></i> <span dir="ltr">{{ $branch->phone }}</span></li>
-                        <li style="display: flex; gap: 10px;"><i class="bi bi-clock" style="color: var(--primary); margin-top: 4px;"></i> <span>{{ trans_field($branch, 'working_hours') }}</span></li>
+                        <li style="margin-bottom: 10px; display: flex; gap: 10px;"><i class="bi bi-geo-alt-fill" style="color: var(--primary); margin-top: 4px;"></i> <a href="{{ $branch->maps_url ?: google_maps_directions_url($branch->latitude, $branch->longitude, trans_field($branch, 'address')) }}" target="_blank" rel="noopener">{{ trans_field($branch, 'address') }}</a></li>
+                        <li style="margin-bottom: 10px; display: flex; gap: 10px;"><i class="bi bi-telephone-fill" style="color: var(--primary); margin-top: 4px;"></i> <a href="tel:{{ $branch->phone }}" dir="ltr">{{ $branch->phone }}</a></li>
+                        <li style="display: flex; gap: 10px;"><i class="bi bi-clock" style="color: var(--primary); margin-top: 4px;"></i> <span>{!! wrap_ltr_time_ranges(trans_field($branch, 'working_hours')) !!}</span></li>
                     </ul>
                 </div>
             @endforeach

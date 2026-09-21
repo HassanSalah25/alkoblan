@@ -333,6 +333,16 @@
     box-shadow: var(--shadow-hover);
 }
 
+.branch-card a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.branch-card a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
 .branch-icon {
     width: 60px;
     height: 60px;

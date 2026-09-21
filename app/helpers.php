@@ -88,3 +88,45 @@ if (! function_exists('google_maps_embed_url')) {
         return 'https://maps.google.com/maps?q='.rawurlencode($addressQuery)."&hl={$locale}&z=12&output=embed";
     }
 }
+
+if (! function_exists('google_maps_directions_url')) {
+    /**
+     * A clickable (non-embed) Google Maps link for coordinates, falling back to the configured
+     * embed's coordinates, then to a text address query.
+     */
+    function google_maps_directions_url(?float $latitude = null, ?float $longitude = null, ?string $addressQuery = null): string
+    {
+        if ($latitude !== null && $longitude !== null) {
+            return sprintf('https://maps.google.com/?q=%s,%s', $latitude, $longitude);
+        }
+
+        if ($addressQuery === null && preg_match('/[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)/', (string) setting('google_maps_embed', ''), $matches)) {
+            return sprintf('https://maps.google.com/?q=%s,%s', $matches[1], $matches[2]);
+        }
+
+        $addressQuery = $addressQuery ?: setting(
+            app()->getLocale() === 'ar' ? 'contact_address_ar' : 'contact_address',
+            'Riyadh, Saudi Arabia'
+        );
+
+        return 'https://maps.google.com/?q='.rawurlencode($addressQuery);
+    }
+}
+
+if (! function_exists('wrap_ltr_time_ranges')) {
+    /**
+     * HTML-escape $text and wrap any "H:MM marker[- H:MM marker]" time expression in a
+     * dir="ltr" span, so the digit groups don't get visually reordered inside surrounding
+     * RTL text (Arabic bidi puts LTR number groups in reverse order otherwise).
+     */
+    function wrap_ltr_time_ranges(?string $text): string
+    {
+        $escaped = e((string) $text);
+
+        return preg_replace(
+            '/\d{1,2}:\d{2}\s*(?:ص|م|AM|PM|am|pm)?(?:\s*-\s*\d{1,2}:\d{2}\s*(?:ص|م|AM|PM|am|pm)?)?/u',
+            '<span dir="ltr">$0</span>',
+            $escaped
+        );
+    }
+}

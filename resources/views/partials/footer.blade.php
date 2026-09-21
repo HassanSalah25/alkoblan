@@ -37,22 +37,22 @@
                 <ul class="footer-contact-list">
                     <li>
                         <div class="footer-contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                        <div class="footer-contact-text">{{ app()->getLocale() === 'ar' ? setting('contact_address_ar') : setting('contact_address') }}</div>
+                        <a href="{{ google_maps_directions_url() }}" target="_blank" rel="noopener" class="footer-contact-text">{{ app()->getLocale() === 'ar' ? setting('contact_address_ar') : setting('contact_address') }}</a>
                     </li>
                     <li>
                         <div class="footer-contact-icon"><i class="bi bi-telephone-fill"></i></div>
                         <div class="footer-contact-text">
-                            {{ setting('contact_phone') }}<br>
-                            {{ setting('contact_phone_secondary') }}
+                            @if(setting('contact_phone'))<a href="tel:{{ setting('contact_phone') }}" dir="ltr">{{ setting('contact_phone') }}</a>@endif
+                            @if(setting('contact_phone_secondary'))<br><a href="tel:{{ setting('contact_phone_secondary') }}" dir="ltr">{{ setting('contact_phone_secondary') }}</a>@endif
                         </div>
                     </li>
                     <li>
                         <div class="footer-contact-icon"><i class="bi bi-envelope"></i></div>
-                        <div class="footer-contact-text">{{ setting('contact_email') }}</div>
+                        <div class="footer-contact-text"><a href="mailto:{{ setting('contact_email') }}">{{ setting('contact_email') }}</a></div>
                     </li>
                     <li>
                         <div class="footer-contact-icon"><i class="bi bi-clock"></i></div>
-                        <div class="footer-contact-text">{{ app()->getLocale() === 'ar' ? setting('working_hours_ar') : setting('working_hours') }}</div>
+                        <div class="footer-contact-text">{!! wrap_ltr_time_ranges(app()->getLocale() === 'ar' ? setting('working_hours_ar') : setting('working_hours')) !!}</div>
                     </li>
                 </ul>
             </div>

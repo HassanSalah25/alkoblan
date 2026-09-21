@@ -157,9 +157,9 @@
             @foreach($branches as $branch)
                 <div class="branch-card reveal">
                     <h4>{{ trans_field($branch, 'name') }}</h4>
-                    <p><i class="bi bi-geo-fill"></i> {{ trans_field($branch, 'address') }}</p>
-                    <p><i class="bi bi-telephone-fill"></i> {{ $branch->phone }}</p>
-                    @if($branch->email)<p><i class="bi bi-envelope"></i> {{ $branch->email }}</p>@endif
+                    <p><i class="bi bi-geo-fill"></i> <a href="{{ $branch->maps_url ?: google_maps_directions_url($branch->latitude, $branch->longitude, trans_field($branch, 'address')) }}" target="_blank" rel="noopener">{{ trans_field($branch, 'address') }}</a></p>
+                    <p><i class="bi bi-telephone-fill"></i> <a href="tel:{{ $branch->phone }}" dir="ltr">{{ $branch->phone }}</a></p>
+                    @if($branch->email)<p><i class="bi bi-envelope"></i> <a href="mailto:{{ $branch->email }}">{{ $branch->email }}</a></p>@endif
                 </div>
             @endforeach
         </div>
