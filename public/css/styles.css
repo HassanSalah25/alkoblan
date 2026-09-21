@@ -2055,6 +2055,12 @@ body.en .stat-item:not(:last-child)::after {
   line-height: 1.5;
 }
 
+/* Numbers/times forced dir="ltr" inside RTL text must not break mid-run, or the
+   browser's per-line bidi reordering scrambles the digit groups. */
+[dir="ltr"] {
+  white-space: nowrap;
+}
+
 .footer-contact-text a,
 a.footer-contact-text {
   color: inherit;

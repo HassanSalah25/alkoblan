@@ -115,17 +115,19 @@ if (! function_exists('google_maps_directions_url')) {
 
 if (! function_exists('wrap_ltr_time_ranges')) {
     /**
-     * HTML-escape $text and wrap any "H:MM marker[- H:MM marker]" time expression in a
-     * dir="ltr" span, so the digit groups don't get visually reordered inside surrounding
-     * RTL text (Arabic bidi puts LTR number groups in reverse order otherwise).
+     * HTML-escape $text and wrap each "H:MM marker" time individually in its own dir="ltr"
+     * span, so the digit groups render left-to-right. Each time is isolated separately
+     * (not the whole "8:00 ص - 5:00 م" range as one span): an Arabic AM/PM letter directly
+     * before a following number reclassifies it under UAX#9 rule W2 as an Arabic-indexed
+     * digit, which un-reverses right back into RTL order if both times share one span.
      */
     function wrap_ltr_time_ranges(?string $text): string
     {
         $escaped = e((string) $text);
 
         return preg_replace(
-            '/\d{1,2}:\d{2}\s*(?:ص|م|AM|PM|am|pm)?(?:\s*-\s*\d{1,2}:\d{2}\s*(?:ص|م|AM|PM|am|pm)?)?/u',
-            '<span dir="ltr">$0</span>',
+            '/\d{1,2}:\d{2}\s*(?:ص|م|AM|PM|am|pm)?/u',
+            '<span dir="ltr" style="white-space:nowrap">$0</span>',
             $escaped
         );
     }
