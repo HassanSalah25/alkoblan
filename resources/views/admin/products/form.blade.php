@@ -48,11 +48,11 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="6">{{ old('description', $product->description) }}</textarea>
+                <textarea name="description" class="form-control rich-editor" rows="6">{{ old('description', $product->description) }}</textarea>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Description (Arabic)</label>
-                <textarea name="description_ar" class="form-control" rows="6">{{ old('description_ar', $product->description_ar) }}</textarea>
+                <textarea name="description_ar" class="form-control rich-editor" rows="6">{{ old('description_ar', $product->description_ar) }}</textarea>
             </div>
         </div>
     </div>
@@ -391,5 +391,6 @@
         tbody.appendChild(tr);
     }
 </script>
+@include('admin.partials.rich-editor')
 @endpush
 @endsection

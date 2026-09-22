@@ -62,11 +62,11 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Content</label>
-                    <textarea name="content" class="form-control" rows="12">{{ old('content', $blogPost->content) }}</textarea>
+                    <textarea name="content" class="form-control rich-editor" rows="12">{{ old('content', $blogPost->content) }}</textarea>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Content (Arabic)</label>
-                    <textarea name="content_ar" class="form-control" rows="12">{{ old('content_ar', $blogPost->content_ar) }}</textarea>
+                    <textarea name="content_ar" class="form-control rich-editor" rows="12">{{ old('content_ar', $blogPost->content_ar) }}</textarea>
                 </div>
             </div>
 
@@ -110,4 +110,8 @@
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="{{ route('admin.blog-posts.index') }}" class="btn btn-outline-secondary">Cancel</a>
 </form>
+
+@push('scripts')
+    @include('admin.partials.rich-editor')
+@endpush
 @endsection
