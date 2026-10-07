@@ -32,17 +32,47 @@ class BlogController extends Controller
 
     public function show(string $slug)
     {
-        $post = BlogPost::where('slug', $slug)->published()->with(['category', 'author', 'tags'])->firstOrFail();
+        $post = BlogPost::published()
+            ->where(fn ($q) => $q->where('slug', $slug)->orWhere('slug_ar', $slug))
+            ->with(['category', 'author', 'tags', 'featuredImage'])
+            ->firstOrFail();
+
         $post->increment('views_count');
+
+        $locale = app()->getLocale();
+        $isAr   = $locale === 'ar';
+
+        $seoTitle       = ($isAr ? $post->seo_title_ar : $post->seo_title)
+                        ?: ($isAr ? $post->title_ar    : $post->title)
+                        ?: ($post->title_ar ?: $post->title);
+
+        $seoDescription = ($isAr ? $post->seo_description_ar : $post->seo_description)
+                        ?: ($isAr ? $post->excerpt_ar        : $post->excerpt)
+                        ?: ($post->excerpt_ar ?: $post->excerpt);
+
+        $seoKeywords    = ($isAr ? $post->seo_keywords_ar : $post->seo_keywords);
+
+        // Admin-defined canonical takes priority; fall back to current URL
+        $canonicalUrl   = ($isAr ? $post->canonical_url_ar : $post->canonical_url) ?: url()->current();
+
+        $ogImage        = $post->featuredImage?->url;
+        $ogImageAlt     = ($isAr ? $post->featured_image_alt_ar : $post->featured_image_alt)
+                        ?: $seoTitle;
 
         $related = BlogPost::published()->where('blog_category_id', $post->blog_category_id)
             ->where('id', '!=', $post->id)->limit(3)->get();
 
         return view('pages.blog-detail', [
-            'post' => $post,
-            'related' => $related,
-            'recentPosts' => BlogPost::published()->latest('published_at')->limit(3)->get(),
-            'categories' => BlogCategory::withCount('posts')->get(),
+            'post'          => $post,
+            'related'       => $related,
+            'recentPosts'   => BlogPost::published()->latest('published_at')->limit(3)->get(),
+            'categories'    => BlogCategory::withCount('posts')->get(),
+            'seoTitle'      => $seoTitle,
+            'seoDescription'=> $seoDescription,
+            'seoKeywords'   => $seoKeywords,
+            'canonicalUrl'  => $canonicalUrl,
+            'ogImage'       => $ogImage,
+            'ogImageAlt'    => $ogImageAlt,
         ]);
     }
 }

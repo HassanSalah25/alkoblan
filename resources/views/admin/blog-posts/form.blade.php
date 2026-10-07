@@ -79,6 +79,17 @@
 
             <x-admin.media-picker field="featured_image_id" :value="$blogPost->featured_image_id" :url="$blogPost->featuredImage?->url" type="image" label="Featured Image" />
 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Featured Image Alt (English)</label>
+                    <input type="text" name="featured_image_alt" class="form-control" value="{{ old('featured_image_alt', $blogPost->featured_image_alt) }}" placeholder="Describe the image in English">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Featured Image Alt (Arabic)</label>
+                    <input type="text" name="featured_image_alt_ar" class="form-control" value="{{ old('featured_image_alt_ar', $blogPost->featured_image_alt_ar) }}" placeholder="وصف الصورة بالعربية" dir="rtl">
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label d-block">Tags</label>
                 @forelse ($tags as $tag)
@@ -121,6 +132,16 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">SEO Description (Arabic)</label>
                     <textarea name="seo_description_ar" class="form-control" rows="3" dir="rtl">{{ old('seo_description_ar', $blogPost->seo_description_ar) }}</textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Canonical URL (English)</label>
+                    <input type="url" name="canonical_url" class="form-control" value="{{ old('canonical_url', $blogPost->canonical_url) }}" placeholder="https://alkoblan.com/en/blog/article-slug">
+                    <div class="form-text">Leave blank to use the current page URL automatically.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Canonical URL (Arabic)</label>
+                    <input type="url" name="canonical_url_ar" class="form-control" value="{{ old('canonical_url_ar', $blogPost->canonical_url_ar) }}" placeholder="https://alkoblan.com/ar/blog/عنوان-المقال" dir="rtl">
+                    <div class="form-text">اتركه فارغاً لاستخدام رابط الصفحة الحالي تلقائياً.</div>
                 </div>
             </div>
         </div>

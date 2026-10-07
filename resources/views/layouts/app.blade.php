@@ -12,7 +12,12 @@
     <meta property="og:title" content="{{ $seoTitle ?? (app()->getLocale() === 'ar' ? setting('seo_default_title_ar') : setting('seo_default_title')) }}">
     <meta property="og:description" content="{{ $seoDescription ?? (app()->getLocale() === 'ar' ? setting('seo_default_description_ar') : setting('seo_default_description')) }}">
     <meta property="og:type" content="website">
-    @if(!empty($ogImage)) <meta property="og:image" content="{{ $ogImage }}"> @endif
+    @if(!empty($ogImage))
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:alt" content="{{ $ogImageAlt ?? ($seoTitle ?? '') }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
+    <meta name="twitter:image:alt" content="{{ $ogImageAlt ?? ($seoTitle ?? '') }}">
+    @endif
     <meta name="twitter:card" content="summary_large_image">
 
     <title>{{ $seoTitle ?? (app()->getLocale() === 'ar' ? setting('seo_default_title_ar') : setting('seo_default_title')) }}</title>
