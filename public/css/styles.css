@@ -1958,6 +1958,8 @@ body.en .stat-item:not(:last-child)::after {
   color: rgba(255,255,255,0.6);
   line-height: 1.8;
   margin: 20px 0 24px;
+  width: 400px;
+  text-wrap: auto;
 }
 
 .footer-social {
