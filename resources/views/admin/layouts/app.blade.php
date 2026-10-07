@@ -26,7 +26,8 @@
             --ak-radius: 14px;
         }
         * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-        body { background: #f6f7fb; min-height: 100vh; color: #1f2536; }
+        html { overflow-x: hidden; }
+        body { background: #f6f7fb; min-height: 100vh; color: #1f2536; overflow-x: clip; }
 
         /* ---------- Sidebar ---------- */
         #sidebar {
@@ -68,7 +69,7 @@
         }
         #sidebar .nav-link i { width: 1.15rem; text-align: center; font-size: 1rem; opacity: .95; }
 
-        .content-wrap { margin-left: var(--sidebar-width); min-height: 100vh; display: flex; flex-direction: column; }
+        .content-wrap { margin-left: var(--sidebar-width); min-height: 100vh; display: flex; flex-direction: column; min-width: 0; max-width: calc(100vw - var(--sidebar-width)); }
 
         /* ---------- Topbar ---------- */
         #topbar {
