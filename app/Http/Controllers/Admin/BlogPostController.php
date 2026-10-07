@@ -41,7 +41,8 @@ class BlogPostController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['slug'] = $this->uniqueSlug(BlogPost::class, $data['title'], null, $request->input('slug'));
+        $slugSource = $data['title'] ?: $data['title_ar'];
+        $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, null, $request->input('slug'));
         $data['user_id'] = auth()->id();
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {
@@ -66,7 +67,8 @@ class BlogPostController extends Controller
     public function update(Request $request, BlogPost $blogPost)
     {
         $data = $this->validated($request);
-        $data['slug'] = $this->uniqueSlug(BlogPost::class, $data['title'], $blogPost->id, $request->input('slug'));
+        $slugSource = $data['title'] ?: $data['title_ar'];
+        $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, $blogPost->id, $request->input('slug'));
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -87,9 +89,14 @@ class BlogPostController extends Controller
 
     private function validated(Request $request): array
     {
+        $request->validate([
+            'title'    => ['required_without:title_ar'],
+            'title_ar' => ['required_without:title'],
+        ]);
+
         return $request->validate([
             'blog_category_id' => ['nullable', 'exists:blog_categories,id'],
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'title_ar' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string'],

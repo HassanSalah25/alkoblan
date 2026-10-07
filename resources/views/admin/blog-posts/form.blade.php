@@ -12,13 +12,16 @@
         <div class="card-header bg-white"><strong>Post Details</strong></div>
         <div class="card-body">
             <div class="row">
+                <div class="col-12 mb-2">
+                    <div class="alert alert-info py-2 mb-0 small">At least one language title is required — you may fill English only, Arabic only, or both.</div>
+                </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Title *</label>
-                    <input type="text" name="title" class="form-control" value="{{ old('title', $blogPost->title) }}" required>
+                    <label class="form-label">Title (English)</label>
+                    <input type="text" name="title" class="form-control" value="{{ old('title', $blogPost->title) }}">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Title (Arabic)</label>
-                    <input type="text" name="title_ar" class="form-control" value="{{ old('title_ar', $blogPost->title_ar) }}">
+                    <input type="text" name="title_ar" class="form-control" value="{{ old('title_ar', $blogPost->title_ar) }}" dir="rtl">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Slug</label>
