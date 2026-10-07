@@ -14,6 +14,7 @@ class BlogPostListResource extends JsonResource
             'title' => $this->title,
             'title_ar' => $this->title_ar,
             'slug' => $this->slug,
+            'slug_ar' => $this->slug_ar,
             'excerpt' => $this->excerpt,
             'excerpt_ar' => $this->excerpt_ar,
             'featured_image' => $this->whenLoaded('featuredImage', fn () => $this->featuredImage ? new MediaResource($this->featuredImage) : null),

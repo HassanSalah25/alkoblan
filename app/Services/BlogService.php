@@ -38,7 +38,8 @@ class BlogService
 
     public function findBySlug(string $slug): ?BlogPost
     {
-        $post = BlogPost::published()->where('slug', $slug)
+        $post = BlogPost::published()
+            ->where(fn ($q) => $q->where('slug', $slug)->orWhere('slug_ar', $slug))
             ->with(['category', 'featuredImage', 'tags', 'author'])
             ->first();
 
