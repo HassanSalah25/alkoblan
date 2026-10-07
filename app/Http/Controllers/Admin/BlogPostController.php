@@ -43,6 +43,9 @@ class BlogPostController extends Controller
         $data = $this->validated($request);
         $slugSource = $data['title'] ?: $data['title_ar'];
         $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, null, $request->input('slug'));
+        if (!empty($data['title_ar'])) {
+            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], null, $request->input('slug_ar'));
+        }
         $data['user_id'] = auth()->id();
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {
@@ -69,6 +72,9 @@ class BlogPostController extends Controller
         $data = $this->validated($request);
         $slugSource = $data['title'] ?: $data['title_ar'];
         $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, $blogPost->id, $request->input('slug'));
+        if (!empty($data['title_ar'])) {
+            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], $blogPost->id, $request->input('slug_ar'));
+        }
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {
             $data['published_at'] = now();
@@ -99,6 +105,7 @@ class BlogPostController extends Controller
             'title' => ['nullable', 'string', 'max:255'],
             'title_ar' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
+            'slug_ar' => ['nullable', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string'],
             'excerpt_ar' => ['nullable', 'string'],
             'content' => ['nullable', 'string'],
@@ -107,8 +114,11 @@ class BlogPostController extends Controller
             'status' => ['required', 'in:draft,published,scheduled'],
             'published_at' => ['nullable', 'date'],
             'seo_title' => ['nullable', 'string', 'max:255'],
+            'seo_title_ar' => ['nullable', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string'],
+            'seo_description_ar' => ['nullable', 'string'],
             'seo_keywords' => ['nullable', 'string', 'max:255'],
+            'seo_keywords_ar' => ['nullable', 'string', 'max:255'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:blog_tags,id'],
         ]);

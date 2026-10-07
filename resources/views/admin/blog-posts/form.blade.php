@@ -24,8 +24,12 @@
                     <input type="text" name="title_ar" class="form-control" value="{{ old('title_ar', $blogPost->title_ar) }}" dir="rtl">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Slug</label>
-                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $blogPost->slug) }}" placeholder="Auto-generated from title if left blank">
+                    <label class="form-label">Slug (English)</label>
+                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $blogPost->slug) }}" placeholder="Auto-generated from English title if left blank">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Slug (Arabic)</label>
+                    <input type="text" name="slug_ar" class="form-control" value="{{ old('slug_ar', $blogPost->slug_ar) }}" placeholder="Auto-generated from Arabic title if left blank" dir="rtl">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Category</label>
@@ -95,16 +99,28 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">SEO Title</label>
+                    <label class="form-label">SEO Title (English)</label>
                     <input type="text" name="seo_title" class="form-control" value="{{ old('seo_title', $blogPost->seo_title) }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">SEO Keywords</label>
+                    <label class="form-label">SEO Title (Arabic)</label>
+                    <input type="text" name="seo_title_ar" class="form-control" value="{{ old('seo_title_ar', $blogPost->seo_title_ar) }}" dir="rtl">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SEO Keywords (English)</label>
                     <input type="text" name="seo_keywords" class="form-control" value="{{ old('seo_keywords', $blogPost->seo_keywords) }}">
                 </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">SEO Description</label>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SEO Keywords (Arabic)</label>
+                    <input type="text" name="seo_keywords_ar" class="form-control" value="{{ old('seo_keywords_ar', $blogPost->seo_keywords_ar) }}" dir="rtl">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SEO Description (English)</label>
                     <textarea name="seo_description" class="form-control" rows="3">{{ old('seo_description', $blogPost->seo_description) }}</textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SEO Description (Arabic)</label>
+                    <textarea name="seo_description_ar" class="form-control" rows="3" dir="rtl">{{ old('seo_description_ar', $blogPost->seo_description_ar) }}</textarea>
                 </div>
             </div>
         </div>

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class BlogPost extends Model
 {
     protected $fillable = [
-        'blog_category_id', 'user_id', 'title', 'title_ar', 'slug', 'source_url', 'excerpt', 'excerpt_ar',
+        'blog_category_id', 'user_id', 'title', 'title_ar', 'slug', 'slug_ar', 'source_url', 'excerpt', 'excerpt_ar',
         'content', 'content_ar', 'featured_image_id', 'status', 'published_at',
-        'seo_title', 'seo_description', 'seo_keywords', 'views_count',
+        'seo_title', 'seo_title_ar', 'seo_description', 'seo_description_ar', 'seo_keywords', 'seo_keywords_ar', 'views_count',
     ];
 
     protected $casts = ['published_at' => 'datetime'];
