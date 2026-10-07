@@ -10,8 +10,12 @@
   box-sizing: border-box;
 }
 
-html, body {
-  /* overflow-x removed to allow position: sticky on navbar */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
 }
 
 img, video, iframe {
