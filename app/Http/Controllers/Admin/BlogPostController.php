@@ -44,7 +44,7 @@ class BlogPostController extends Controller
         $slugSource = $data['title'] ?: $data['title_ar'];
         $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, null, $request->input('slug'));
         if (!empty($data['title_ar'])) {
-            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], null, $request->input('slug_ar'));
+            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], null, $request->input('slug_ar'), 'slug_ar', true);
         }
         $data['user_id'] = auth()->id();
 
@@ -73,7 +73,7 @@ class BlogPostController extends Controller
         $slugSource = $data['title'] ?: $data['title_ar'];
         $data['slug'] = $this->uniqueSlug(BlogPost::class, $slugSource, $blogPost->id, $request->input('slug'));
         if (!empty($data['title_ar'])) {
-            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], $blogPost->id, $request->input('slug_ar'));
+            $data['slug_ar'] = $this->uniqueSlug(BlogPost::class, $data['title_ar'], $blogPost->id, $request->input('slug_ar'), 'slug_ar', true);
         }
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {

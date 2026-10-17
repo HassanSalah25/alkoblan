@@ -24,13 +24,13 @@
                                 <span style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">{{ trans_field($post->category, 'name') }}</span>
                             </div>
                             @endif
-                            <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; color: #2c3e50;"><a href="{{ route('blog.show', $post->slug) }}" style="color: inherit; text-decoration: none;">{{ trans_field($post, 'title') }}</a></h3>
+                            <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; color: #2c3e50;"><a href="{{ route('blog.show', trans_field($post, 'slug')) }}" style="color: inherit; text-decoration: none;">{{ trans_field($post, 'title') }}</a></h3>
                             <div class="blog-meta" style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 15px; display: flex; gap: 15px;">
                                 <span><i class="bi bi-calendar3"></i> {{ $post->published_at?->translatedFormat('d M Y') }}</span>
                                 @if($post->author)<span><i class="bi bi-person-fill"></i> {{ $post->author->name }}</span>@endif
                             </div>
                             <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">{{ trans_field($post, 'excerpt') }}</p>
-                            <div><a href="{{ route('blog.show', $post->slug) }}" class="btn btn-primary btn-sm">اقرأ المزيد <i class="bi bi-arrow-left"></i></a></div>
+                            <div><a href="{{ route('blog.show', trans_field($post, 'slug')) }}" class="btn btn-primary btn-sm">اقرأ المزيد <i class="bi bi-arrow-left"></i></a></div>
                         </div>
                     </article>
                 @empty

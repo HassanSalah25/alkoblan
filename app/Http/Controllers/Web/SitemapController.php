@@ -27,7 +27,12 @@ class SitemapController extends Controller
 
         ProductCategory::active()->get()->each(fn ($c) => $urls->push(['loc' => route('shop.index', ['cat' => $c->slug]), 'priority' => '0.7']));
         Product::active()->get()->each(fn ($p) => $urls->push(['loc' => route('products.show', $p->slug), 'priority' => '0.6', 'lastmod' => $p->updated_at->toAtomString()]));
-        BlogPost::published()->get()->each(fn ($b) => $urls->push(['loc' => route('blog.show', $b->slug), 'priority' => '0.5', 'lastmod' => $b->updated_at->toAtomString()]));
+        BlogPost::published()->get()->each(function ($b) use ($urls) {
+            $urls->push(['loc' => route('blog.show', $b->slug), 'priority' => '0.5', 'lastmod' => $b->updated_at->toAtomString()]);
+            if ($b->slug_ar && $b->slug_ar !== $b->slug) {
+                $urls->push(['loc' => route('blog.show', $b->slug_ar), 'priority' => '0.5', 'lastmod' => $b->updated_at->toAtomString()]);
+            }
+        });
         Page::published()->get()->each(fn ($p) => $urls->push(['loc' => route('pages.show', $p->slug), 'priority' => '0.4', 'lastmod' => $p->updated_at->toAtomString()]));
 
         $xml = view('sitemap', ['urls' => $urls])->render();

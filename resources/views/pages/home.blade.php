@@ -247,7 +247,7 @@
                         </div>
                         <h3 class="blog-card-title">{{ trans_field($post, 'title') }}</h3>
                         <p class="blog-card-excerpt">{{ trans_field($post, 'excerpt') }}</p>
-                        <a href="{{ route('blog.show', $post->slug) }}" class="blog-card-link">{{ __('Read More') }} <i class="bi bi-arrow-left"></i></a>
+                        <a href="{{ route('blog.show', trans_field($post, 'slug')) }}" class="blog-card-link">{{ __('Read More') }} <i class="bi bi-arrow-left"></i></a>
                     </div>
                 </div>
             @endforeach

@@ -10,9 +10,17 @@ trait GeneratesSlugs
      * Generate a unique slug for the given model class/table, based on $source
      * (or explicit $desired), ignoring the row with id $ignoreId (for updates).
      */
-    protected function uniqueSlug(string $modelClass, string $source, ?int $ignoreId = null, ?string $desired = null): string
-    {
-        $base = Str::slug($desired ?: $source);
+    protected function uniqueSlug(
+        string $modelClass,
+        string $source,
+        ?int $ignoreId = null,
+        ?string $desired = null,
+        string $column = 'slug',
+        bool $unicode = false,
+    ): string {
+        $raw = trim((string) (($desired !== null && $desired !== '') ? $desired : $source));
+        // language: null keeps Arabic letters. The default transliterates them to Franco Latin.
+        $base = $unicode ? Str::slug($raw, '-', null) : Str::slug($raw);
         if ($base === '') {
             $base = 'item';
         }
@@ -21,7 +29,7 @@ trait GeneratesSlugs
         $i = 1;
 
         while (
-            $modelClass::where('slug', $slug)
+            $modelClass::where($column, $slug)
                 ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
                 ->exists()
         ) {

@@ -104,7 +104,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">الرابط (Slug)</label>
-                        <input type="text" name="slug_ar" class="form-control" value="{{ old('slug_ar', $blogPost->slug_ar) }}" placeholder="يُولَّد تلقائياً من العنوان">
+                        <input type="text" name="slug_ar" class="form-control" dir="rtl" value="{{ old('slug_ar', $blogPost->slug_ar) }}" placeholder="يُولَّد تلقائياً من العنوان">
+                        <div class="form-text">اتركه فارغاً ليُكتب بالعربية من العنوان، أو اكتب الرابط العربي بنفسك. امسح نص الفرانكو القديم قبل الحفظ.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">المقتطف</label>

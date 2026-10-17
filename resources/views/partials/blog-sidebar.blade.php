@@ -16,7 +16,7 @@
                 <li style="display: flex; gap: 15px; align-items: center;">
                     <img src="{{ $rp->featuredImage?->url ?? asset('images/factory_about.jpg') }}" alt="{{ trans_field($rp, 'title') }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px;">
                     <div>
-                        <h5 style="margin: 0 0 5px 0; font-size: 1rem;"><a href="{{ route('blog.show', $rp->slug) }}" style="color: #2c3e50; text-decoration: none;">{{ \Illuminate\Support\Str::limit(trans_field($rp, 'title'), 40) }}</a></h5>
+                        <h5 style="margin: 0 0 5px 0; font-size: 1rem;"><a href="{{ route('blog.show', trans_field($rp, 'slug')) }}" style="color: #2c3e50; text-decoration: none;">{{ \Illuminate\Support\Str::limit(trans_field($rp, 'title'), 40) }}</a></h5>
                         <span style="font-size: 0.8rem; color: #7f8c8d;"><i class="bi bi-calendar3"></i> {{ $rp->published_at?->translatedFormat('d M Y') }}</span>
                     </div>
                 </li>

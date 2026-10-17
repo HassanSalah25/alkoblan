@@ -49,7 +49,7 @@
                     <div class="blog-card" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 5px 20px rgba(0,0,0,0.05);">
                         <div class="blog-card-img"><img src="{{ $rp->featuredImage?->url ?? asset('images/factory_about.jpg') }}" alt="{{ trans_field($rp, 'title') }}"></div>
                         <div class="blog-card-body" style="padding:20px;">
-                            <h3 class="blog-card-title" style="font-size:1.1rem;"><a href="{{ route('blog.show', $rp->slug) }}" style="color:inherit;text-decoration:none;">{{ trans_field($rp, 'title') }}</a></h3>
+                            <h3 class="blog-card-title" style="font-size:1.1rem;"><a href="{{ route('blog.show', trans_field($rp, 'slug')) }}" style="color:inherit;text-decoration:none;">{{ trans_field($rp, 'title') }}</a></h3>
                         </div>
                     </div>
                 @endforeach
