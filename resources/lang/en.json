@@ -270,5 +270,7 @@
     "pp.error.generic": "Something went wrong. Please try again.",
     "pp.report.title": "Preliminary pipe planning report",
     "pp.report.generated": "Generated",
-    "pp.report.print": "Print / Save as PDF"
+    "pp.report.print": "Print / Save as PDF",
+    "pp.failure.tls_error": "The server could not establish a secure connection to the AI service. Please contact our sales team.",
+    "pp.failure.network_error": "The AI service could not be reached."
 }

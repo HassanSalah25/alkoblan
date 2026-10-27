@@ -2,6 +2,7 @@
 
 namespace App\Services\PipePlanner;
 
+use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
@@ -49,8 +50,8 @@ class OpenRouterClient
         $models = Cache::remember('pipe_planner.openrouter.models', now()->addHours(6), function () {
             try {
                 $response = $this->http()->get('/models');
-            } catch (ConnectionException) {
-                return null;
+            } catch (ConnectionException|TransferException $e) {
+                throw $this->transportFailure($e);
             }
 
             return $response->successful() ? $response->json('data') : null;
@@ -123,12 +124,32 @@ class OpenRouterClient
         }
     }
 
+    /**
+     * Classify a failure that happened before any HTTP response arrived. cURL/Guzzle
+     * messages contain only the URL and error text, so they are safe to log.
+     */
+    protected function transportFailure(\Throwable $e): OpenRouterException
+    {
+        $message = mb_substr($e->getMessage(), 0, 300);
+        Log::warning('pipe_planner.openrouter.transport_error', ['error' => $message]);
+
+        if (preg_match('/cURL error (35|51|58|59|60|77|83)\b|SSL certificate/i', $message)) {
+            // Server CA bundle / TLS setup problem: retrying cannot help.
+            return new OpenRouterException('tls_error', 'TLS certificate verification failed on this server.');
+        }
+        if ($e instanceof ConnectionException && preg_match('/cURL error 28\b|timed out/i', $message)) {
+            return new OpenRouterException('timeout', 'The AI provider did not respond in time.', true);
+        }
+
+        return new OpenRouterException('network_error', 'Could not reach the AI provider.', true);
+    }
+
     protected function send(array $payload): array
     {
         try {
             $response = $this->http()->post('/chat/completions', $payload);
-        } catch (ConnectionException) {
-            throw new OpenRouterException('timeout', 'The AI provider did not respond in time.', true);
+        } catch (ConnectionException|TransferException $e) {
+            throw $this->transportFailure($e);
         }
 
         $status = $response->status();

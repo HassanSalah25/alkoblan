@@ -11,6 +11,8 @@ use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\PipePlanner\PlannerSettings;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Request as HttpRequest;
@@ -422,6 +424,26 @@ class PipePlannerTest extends TestCase
         $this->uploadPhoto($ref);
         $this->postJson("/pipe-planner/projects/{$ref}/analyses");
         $this->assertSame('timeout', PipePlanningAnalysis::first()->failure_category);
+    }
+
+    public function test_tls_certificate_failure_is_classified_and_not_retried(): void
+    {
+        // Reproduces PHP on Windows without a CA bundle (cURL error 60).
+        $calls = 0;
+        Http::fake(function ($request) use (&$calls) {
+            $calls++;
+
+            throw new RequestException(
+                'cURL error 60: SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)',
+                new Request('GET', (string) $request->url()),
+            );
+        });
+        $ref = $this->createProject();
+        $this->uploadPhoto($ref);
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses");
+
+        $this->assertSame('tls_error', PipePlanningAnalysis::first()->failure_category);
+        $this->assertSame(1, $calls); // a TLS setup problem is not retried
     }
 
     public function test_non_vision_model_is_refused(): void

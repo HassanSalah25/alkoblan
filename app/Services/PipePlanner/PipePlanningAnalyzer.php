@@ -75,7 +75,9 @@ class PipePlanningAnalyzer
         } catch (OpenRouterException $e) {
             $this->fail($analysis, $e->category, [], $started);
         } catch (\Throwable $e) {
-            Log::error('pipe_planner.analysis.exception', ['analysis_id' => $analysis->id, 'exception' => get_class($e)]);
+            Log::error('pipe_planner.analysis.exception', [
+                'analysis_id' => $analysis->id, 'exception' => get_class($e), 'message' => mb_substr($e->getMessage(), 0, 300),
+            ]);
             $this->fail($analysis, 'internal_error', [], $started);
         }
     }
