@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PipePlannerController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductFileController;
@@ -179,6 +180,14 @@ Route::prefix('admin')->name('admin.')->group(function () use ($crud) {
     Route::put('customers/{customer}', [CustomerController::class, 'update'])->name('customers.update')->middleware('permission:customers.update');
     Route::patch('customers/{customer}/toggle', [CustomerController::class, 'toggle'])->name('customers.toggle')->middleware('permission:customers.update');
     Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy')->middleware('permission:customers.delete');
+
+    // ---------------- AI Pipe Planner ----------------
+    Route::get('pipe-planner', [PipePlannerController::class, 'index'])->name('pipe-planner.index')->middleware('permission:pipe_planner.view');
+    Route::get('pipe-planner/settings', [PipePlannerController::class, 'settings'])->name('pipe-planner.settings')->middleware('permission:pipe_planner.update');
+    Route::put('pipe-planner/settings', [PipePlannerController::class, 'updateSettings'])->name('pipe-planner.settings.update')->middleware('permission:pipe_planner.update');
+    Route::get('pipe-planner/images/{image}', [PipePlannerController::class, 'image'])->name('pipe-planner.image')->middleware('permission:pipe_planner.view');
+    Route::get('pipe-planner/{project}', [PipePlannerController::class, 'show'])->name('pipe-planner.show')->middleware('permission:pipe_planner.view');
+    Route::delete('pipe-planner/{project}', [PipePlannerController::class, 'destroy'])->name('pipe-planner.destroy')->middleware('permission:pipe_planner.delete');
 
     // ---------------- Locations ----------------
     $crud('branches', BranchController::class, 'branches');

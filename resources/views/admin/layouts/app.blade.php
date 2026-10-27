@@ -301,6 +301,9 @@
         @can('orders.view')
         <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}"><i class="bi bi-receipt"></i> Orders</a>
         @endcan
+        @can('pipe_planner.view')
+        <a class="nav-link {{ request()->routeIs('admin.pipe-planner.*') ? 'active' : '' }}" href="{{ route('admin.pipe-planner.index') }}"><i class="bi bi-diagram-2"></i> AI Pipe Planner</a>
+        @endcan
         @can('customers.view')
         <a class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}"><i class="bi bi-people"></i> Customers</a>
         @endcan

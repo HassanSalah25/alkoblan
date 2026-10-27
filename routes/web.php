@@ -16,6 +16,7 @@ use App\Http\Controllers\Web\FaqController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\NewsletterController;
 use App\Http\Controllers\Web\PageController;
+use App\Http\Controllers\Web\PipePlannerController;
 use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\ShopController;
 use App\Http\Controllers\Web\SitemapController;
@@ -63,6 +64,29 @@ Route::get('/lang/{locale}', function (string $locale) {
 
     return back();
 })->name('lang.switch');
+
+// ---------------------------------------------------------------------
+// AI Pipe Planner (guest-friendly; ownership enforced in the controller)
+// ---------------------------------------------------------------------
+Route::get('/pipe-planner', [PipePlannerController::class, 'index'])->name('pipe-planner.index');
+Route::prefix('pipe-planner')->name('pipe-planner.')->middleware('throttle:pipe-planner')->group(function () {
+    Route::get('projects', [PipePlannerController::class, 'projects'])->name('projects.index');
+    Route::post('projects', [PipePlannerController::class, 'store'])->name('projects.store')->middleware('throttle:pipe-planner-create');
+    Route::get('projects/{project}', [PipePlannerController::class, 'show'])->name('projects.show');
+    Route::patch('projects/{project}', [PipePlannerController::class, 'update'])->name('projects.update');
+    Route::delete('projects/{project}', [PipePlannerController::class, 'destroy'])->name('projects.destroy');
+
+    Route::post('projects/{project}/images', [PipePlannerController::class, 'uploadImage'])->name('images.store')->middleware('throttle:pipe-planner-upload');
+    Route::patch('projects/{project}/images/{image}', [PipePlannerController::class, 'updateImage'])->name('images.update');
+    Route::delete('projects/{project}/images/{image}', [PipePlannerController::class, 'deleteImage'])->name('images.destroy');
+    Route::get('images/{image}', [PipePlannerController::class, 'showImage'])->name('images.show')->middleware('signed');
+
+    Route::post('projects/{project}/analyses', [PipePlannerController::class, 'analyze'])->name('analyses.store')->middleware('throttle:pipe-planner-analysis');
+    Route::get('projects/{project}/analyses/{version}', [PipePlannerController::class, 'analysis'])->name('analyses.show')->whereNumber('version');
+    Route::patch('projects/{project}/analyses/{version}/waste', [PipePlannerController::class, 'updateWaste'])->name('analyses.waste')->whereNumber('version');
+    Route::get('projects/{project}/analyses/{version}/report', [PipePlannerController::class, 'report'])->name('analyses.report')->whereNumber('version');
+    Route::post('projects/{project}/analyses/{version}/quote', [PipePlannerController::class, 'requestQuote'])->name('analyses.quote')->whereNumber('version')->middleware('throttle:pipe-planner-quote');
+});
 
 // ---------------------------------------------------------------------
 // Cart & Checkout

@@ -50,7 +50,9 @@ class MenuSeeder extends Seeder
         // Standalone link (no dropdown).
         MenuItem::create(['location' => 'main', 'title' => 'Social Responsibility', 'title_ar' => 'المسؤولية الاجتماعية', 'url' => '/pages/social-responsibility', 'sort_order' => 7]);
 
-        MenuItem::create(['location' => 'main', 'title' => 'Contact Us', 'title_ar' => 'تواصل معنا', 'url' => '/contact', 'sort_order' => 8]);
+        MenuItem::create(['location' => 'main', 'title' => 'AI Pipe Planner', 'title_ar' => 'مخطط المواسير الذكي', 'url' => '/pipe-planner', 'sort_order' => 8]);
+
+        MenuItem::create(['location' => 'main', 'title' => 'Contact Us', 'title_ar' => 'تواصل معنا', 'url' => '/contact', 'sort_order' => 9]);
 
         // footer quick links
         foreach ([

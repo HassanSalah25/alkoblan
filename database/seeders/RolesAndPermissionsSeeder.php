@@ -12,7 +12,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'pages', 'homepage', 'menus', 'testimonials', 'faqs', 'blogs', 'events', 'careers',
         'products', 'categories', 'attributes', 'product_files',
         'orders', 'customers', 'branches', 'media', 'contact_messages',
-        'settings', 'users', 'roles',
+        'settings', 'users', 'roles', 'pipe_planner',
     ];
 
     public function run(): void
@@ -56,6 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
                     ->orWhere('name', 'like', 'attributes.%')
                     ->orWhere('name', 'like', 'product_files.%')
                     ->orWhere('name', 'like', 'orders.%')
+                    ->orWhere('name', 'like', 'pipe_planner.%')
                     ->orWhere('name', 'like', 'media.%');
             })->get()
         );
