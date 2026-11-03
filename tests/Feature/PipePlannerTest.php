@@ -18,6 +18,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -472,6 +473,32 @@ class PipePlannerTest extends TestCase
     {
         $ref = $this->createProject();
         $this->postJson("/pipe-planner/projects/{$ref}/analyses")->assertStatus(422)->assertJsonPath('error', 'no_images');
+    }
+
+    public function test_analysis_never_picked_up_by_a_worker_expires_and_can_be_retried(): void
+    {
+        $this->fakeOpenRouter();
+        Queue::fake(); // simulates a server with no queue worker
+        $ref = $this->createProject();
+        $this->uploadPhoto($ref);
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses")->assertStatus(202)->assertJsonPath('data.status', 'queued');
+
+        $this->travel(11)->minutes();
+        $this->getJson("/pipe-planner/projects/{$ref}/analyses/1")->assertJsonPath('data.status', 'failed')
+            ->assertJsonPath('data.failure_category', 'queue_stalled');
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses")->assertStatus(202)->assertJsonPath('data.version', 2);
+    }
+
+    public function test_after_response_dispatch_runs_without_a_worker(): void
+    {
+        config(['pipe_planner.dispatch' => 'after_response', 'queue.default' => 'database']);
+        $this->fakeOpenRouter();
+        $ref = $this->createProject();
+        $this->uploadPhoto($ref);
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses")->assertStatus(202);
+
+        $this->assertSame('completed', PipePlanningAnalysis::first()->status);
+        $this->assertDatabaseCount('jobs', 0);
     }
 
     public function test_unchanged_inputs_reuse_previous_result(): void

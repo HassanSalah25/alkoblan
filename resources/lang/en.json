@@ -272,5 +272,6 @@
     "pp.report.generated": "Generated",
     "pp.report.print": "Print / Save as PDF",
     "pp.failure.tls_error": "The server could not establish a secure connection to the AI service. Please contact our sales team.",
-    "pp.failure.network_error": "The AI service could not be reached."
+    "pp.failure.network_error": "The AI service could not be reached.",
+    "pp.failure.queue_stalled": "The analysis did not start (the server is not processing jobs). Please try again or contact our sales team."
 }

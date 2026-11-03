@@ -34,6 +34,16 @@ return [
         'max_catalog_products' => (int) env('PIPE_PLANNER_MAX_CATALOG_PRODUCTS', 120),
     ],
 
+    // "queue" (default): needs `php artisan queue:work` running.
+    // "after_response": no worker needed; the analysis runs in the web process after the reply is sent.
+    'dispatch' => env('PIPE_PLANNER_DISPATCH', 'queue'),
+
+    // Analyses stuck longer than this are marked failed so customers can retry.
+    'stall_minutes' => [
+        'queued' => (int) env('PIPE_PLANNER_QUEUED_STALL_MINUTES', 10),
+        'running' => (int) env('PIPE_PLANNER_RUNNING_STALL_MINUTES', 20),
+    ],
+
     'retention_days' => (int) env('PIPE_PLANNER_RETENTION_DAYS', 90),
 
     'show_prices' => (bool) env('PIPE_PLANNER_SHOW_PRICES', true),

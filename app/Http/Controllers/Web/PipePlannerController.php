@@ -18,6 +18,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -263,6 +264,7 @@ class PipePlannerController extends Controller
             return $this->error('not_configured', 'The AI planner is temporarily unavailable. Please contact our sales team.', 'المخطط الذكي غير متاح حاليًا. يرجى التواصل مع فريق المبيعات.', 503);
         }
 
+        $this->expireStalled($project);
         $active = $project->analyses()->whereIn('status', PipePlanningAnalysis::ACTIVE_STATUSES)->first();
         if ($active) {
             return response()->json(['data' => $this->analysisPayload($active), 'reused' => true], 202);
@@ -298,14 +300,46 @@ class PipePlannerController extends Controller
         });
         $project->update(['analysis_status' => 'queued']);
 
-        RunPipePlanningAnalysis::dispatch($analysis);
+        if (config('pipe_planner.dispatch') === 'after_response') {
+            // For hosts without a queue worker: runs in this PHP process once the response is sent.
+            RunPipePlanningAnalysis::dispatchAfterResponse($analysis);
+        } else {
+            RunPipePlanningAnalysis::dispatch($analysis);
+        }
 
         return response()->json(['data' => $this->analysisPayload($analysis->fresh())], 202);
+    }
+
+    /**
+     * Fail analyses no worker picked up (or that died mid-run) so they stop blocking
+     * new attempts and the customer gets a clear message instead of an endless spinner.
+     */
+    protected function expireStalled(PipePlanningProject $project): void
+    {
+        $queuedLimit = now()->subMinutes(config('pipe_planner.stall_minutes.queued'));
+        $runningLimit = now()->subMinutes(config('pipe_planner.stall_minutes.running'));
+
+        $stalled = $project->analyses()
+            ->where(fn ($q) => $q->where(fn ($q) => $q->where('status', 'queued')->where('created_at', '<', $queuedLimit))
+                ->orWhere(fn ($q) => $q->where('status', 'running')->where('started_at', '<', $runningLimit)))
+            ->get();
+
+        foreach ($stalled as $analysis) {
+            $analysis->update([
+                'status' => 'failed', 'stage' => null, 'completed_at' => now(),
+                'failure_category' => $analysis->status === 'queued' ? 'queue_stalled' : 'job_failed',
+            ]);
+            Log::warning('pipe_planner.analysis.stalled', ['analysis_id' => $analysis->id, 'failure_category' => $analysis->failure_category]);
+        }
+        if ($stalled->isNotEmpty()) {
+            $project->update(['analysis_status' => 'failed']);
+        }
     }
 
     public function analysis(Request $request, PipePlanningProject $project, int $version): JsonResponse
     {
         $this->access->authorize($request, $project);
+        $this->expireStalled($project);
         $analysis = $project->analyses()->where('version', $version)->firstOrFail();
 
         return response()->json(['data' => $this->analysisPayload($analysis)]);
