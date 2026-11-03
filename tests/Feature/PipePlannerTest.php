@@ -447,6 +447,30 @@ class PipePlannerTest extends TestCase
         $this->assertSame(1, $calls); // a TLS setup problem is not retried
     }
 
+    public function test_unsupported_temperature_is_not_sent(): void
+    {
+        // Models whose supported_parameters lack "temperature" (seen on the live site).
+        $this->fakeOpenRouter();
+        $ref = $this->createProject();
+        $this->uploadPhoto($ref);
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses");
+
+        Http::assertSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/chat/completions') && ! array_key_exists('temperature', $r->data()));
+        $this->assertSame('completed', PipePlanningAnalysis::first()->status);
+    }
+
+    public function test_batch_model_variant_is_refused_before_calling_the_provider(): void
+    {
+        config(['pipe_planner.openrouter.model' => 'test/vision-model:batch']);
+        $this->fakeOpenRouter();
+        $ref = $this->createProject();
+        $this->uploadPhoto($ref);
+        $this->postJson("/pipe-planner/projects/{$ref}/analyses");
+
+        $this->assertSame('model_unavailable', PipePlanningAnalysis::first()->failure_category);
+        Http::assertNotSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/chat/completions'));
+    }
+
     public function test_non_vision_model_is_refused(): void
     {
         config(['pipe_planner.openrouter.model' => 'test/text-only']);

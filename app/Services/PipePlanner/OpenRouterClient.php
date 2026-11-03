@@ -62,6 +62,11 @@ class OpenRouterClient
             throw new OpenRouterException('provider_unavailable', 'Could not load the OpenRouter model list.', true);
         }
 
+        if (str_ends_with($model, ':batch')) {
+            // Batch variants are only served by OpenRouter's asynchronous batch API.
+            throw new OpenRouterException('model_unavailable', "Model [{$model}] is a batch-only variant; use the id without ':batch'.");
+        }
+
         $info = collect($models)->firstWhere('id', $model);
         if (! $info) {
             throw new OpenRouterException('model_unavailable', "Model [{$model}] is not available on OpenRouter.");
@@ -76,6 +81,7 @@ class OpenRouterClient
             'id' => $model,
             'structured_outputs' => in_array('structured_outputs', $params, true),
             'response_format' => in_array('response_format', $params, true),
+            'temperature' => in_array('temperature', $params, true),
         ];
     }
 
@@ -90,9 +96,13 @@ class OpenRouterClient
             'model' => $model['id'],
             'messages' => $messages,
             'max_tokens' => $this->settings->get('max_tokens'),
-            'temperature' => 0.1,
             'usage' => ['include' => true],
         ];
+        // Only send parameters the model supports: with require_parameters an unsupported
+        // one leaves OpenRouter with no eligible provider at all.
+        if ($model['temperature'] ?? false) {
+            $payload['temperature'] = 0.1;
+        }
 
         if ($model['structured_outputs']) {
             $payload['response_format'] = [
@@ -166,6 +176,10 @@ class OpenRouterClient
             throw new OpenRouterException('provider_error', "The AI provider returned HTTP {$status}.", true);
         }
         if ($status >= 400) {
+            // Provider error text explains routing/parameter problems; it never contains our key.
+            Log::warning('pipe_planner.openrouter.rejected', [
+                'status' => $status, 'error' => mb_substr((string) $response->json('error.message', ''), 0, 500),
+            ]);
             throw new OpenRouterException('bad_request', "The AI provider rejected the request (HTTP {$status}).");
         }
 
